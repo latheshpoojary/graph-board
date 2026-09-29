@@ -90,3 +90,35 @@
 </ngx-graph>
 
 <div #host class="chart-host"></div>
+
+
+<form [formGroup]="form" (ngSubmit)="addItem()">
+
+  <input type="text" placeholder="Enter the label" formControlName="label">
+  <input type="number" placeholder="Enter the number" formControlName="value">
+  <button>Submit</button>
+</form>
+
+<svg width="300" height="300">
+  <g transform="translate(150, 150)">
+    @for (slice of slices; track slice.data.label;let i = $index) {
+    <path [attr.d]="arc(slice)" [attr.fill]="colors[i % colors.length]" stroke="white"
+      (mouseenter)="hoverEle = slice.data.label" (mouseleave)="hoverEle = null"
+      [attr.opacity]="hoverEle === null || hoverEle === slice.data.label ? 1 : 0.3" [attr.shadow]="'0px 0px 5px 5px'"
+      (click)="onChartClick(slice.data)">
+      <title>{{slice.data.label}}</title>
+    </path>
+
+    }
+  </g>
+</svg>
+@for (item of data; track item.label; let i = $index) {
+<div style="display: flex; align-items: center; gap: 8px;">
+  <span [style.background-color]="colors[i % colors.length]" style="display: inline-block; width: 12px; height: 12px;">
+  </span>
+  <span>{{ item.label }}</span>
+</div>
+}
+
+<p>Slice Details:</p>
+<p>{{selectedSlice | json}}</p>
