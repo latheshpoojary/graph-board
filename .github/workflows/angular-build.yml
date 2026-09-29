@@ -1,21 +1,25 @@
-name: Angular Build
+name: Build and Deploy Angular
 
 on:
   push:
+    branches: master
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
 jobs:
   build:
-    name: Build Angular project
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
       - name: Download repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Node.js
         uses: actions/setup-node@v7
@@ -23,8 +27,38 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
 
+      - name: Configure GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
       - name: Install dependencies
         run: npm ci
 
       - name: Build Angular
-        run: npm run build -- --configuration production
+        env:
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: npm run build -- --configuration production --base-href "$BASE_PATH/"
+
+      - name: Upload website files
+        uses: actions/upload-pages-artifact@v4
+        with:
+          # Replace with the folder containing your built index.html
+          path: dist\graph-board\browser
+
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+
+    permissions:
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Publish website
+        id: deployment
+        uses: actions/deploy-pages@v4
