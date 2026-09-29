@@ -43,7 +43,7 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           # Replace with the folder containing your built index.html
-          path: dist\graph-board\browser
+          path: dist/graph-board/browser
 
   deploy:
     needs: build
