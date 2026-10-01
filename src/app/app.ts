@@ -1,13 +1,14 @@
-import { JsonPipe } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, NgZone, OnChanges, OnDestroy, signal, SimpleChanges, ViewChild, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import { NgxGraphModule } from '@swimlane/ngx-graph'
 import * as d3 from 'd3';
+import { EmployeeForm } from '../employee-form/employee-form';
 
 interface Point { label: string; value: number; }
 @Component({
-  imports: [NgxGraphModule, JsonPipe, ReactiveFormsModule],
+  imports: [NgxGraphModule, JsonPipe, ReactiveFormsModule, EmployeeForm, CommonModule],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

@@ -1,0 +1,73 @@
+<form [formGroup]="appForm">
+    <div formGroupName="personal">
+        <input type="email" formControlName="email" placeholder="Enter the email">
+        @if (email.pending) {
+        <small>Checking...</small>
+        } @else if (email.hasError('isExist')) {
+        <small style="color: red">Email already exists</small>
+        } @else if (email.hasError('email') && email.dirty) {
+        <small style="color: red">Enter a valid email</small>
+        }
+        @else {
+        <small style="color: green;">Email is availbale</small>
+        <br>
+        <div>
+            <label for="">Phone</label>
+            <input type="tel" formControlName="phone">
+            @if (phone.hasError('pattern') && phone.dirty) {
+            <small style="color: red">Phone must be exactly 10 digits</small>
+            }
+        </div>
+        }
+
+    </div>
+    <div formArrayName="skills">
+        <button (click)="addSkill()">Add Skill</button>
+        <div *ngFor="let skill of skills.controls;let i=index">
+            <div [formGroupName]="i">
+                <div>
+                    <label for="">Name</label>
+                    <input type="text" formControlName="name">
+                </div>
+                <div>
+                    <label for="">Experience</label>
+                    <input type="text" formControlName="exp">
+                </div>
+            </div>
+            <button (click)="removeSkill(i)">Remove</button>
+        </div>
+        @if(skills.hasError('duplicate')){
+        <small>Duplicate Skills not allowed</small>
+        }
+    </div>
+
+    <div formGroupName="education">
+        <input type="date" formControlName="startDate">
+        <input type="date" formControlName="endDate">
+        @if(this.appForm.get('education')?.hasError('endBeforeStart')){
+        <small>end Should be greater than start</small>
+        }
+    </div>
+</form>
+
+
+<p *appIfElse="['manager','admin']" highlight="red">Hello there</p>
+
+<p>{{120000 | converter}}</p>
+
+
+<ng-template #dummy let-i="i" let-lable="name">
+    {{i}} {{lable}} this is dummy
+</ng-template>
+
+<ng-container *ngTemplateOutlet="dummy; context:{i:0,name:'lathesh'}"></ng-container>
+
+<ng-template #loading>
+    Loading
+</ng-template>
+
+<hr>
+
+<div *ngIf="showP else dummy">
+    Jello there
+</div>
